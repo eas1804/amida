@@ -1,0 +1,230 @@
+
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Фінансова компанія "АМІДА" Кредитний калькулятор</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        .container {
+            max-width: 800px;
+            margin: auto;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input {
+            width: 100%;
+            padding: 8px;
+            box-sizing: border-box;
+        }
+        button {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .result, .schedule {
+            margin-top: 20px;
+            padding: 10px;
+            border: 1px solid #007bff;
+            border-radius: 5px;
+            background-color: #f1f9ff;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+        table, th, td {
+            border: 1px solid #ccc;
+            text-align: center;
+            padding: 8px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Фінансова компанія "АМІДА" Кредитний калькулятор</h2>
+        <div class="form-group">
+            <label for="name">Ім'я клієнта</label>
+            <input type="text" id="name" placeholder="Введіть ім'я">
+        </div>
+        <div class="form-group">
+            <label for="surname">Прізвище клієнта</label>
+            <input type="text" id="surname" placeholder="Введіть прізвище">
+        </div>
+        <div class="form-group">
+            <label for="loanAmount">Сума кредиту (ЗРК)</label>
+            <input type="number" id="loanAmount" placeholder="Введіть суму кредиту">
+        </div>
+        <div class="form-group">
+            <label for="startDate">Дата видачі кредиту</label>
+            <input type="date" id="startDate">
+        </div>
+        <div class="form-group">
+            <label for="termDays">Строк кредитування (у днях)</label>
+            <input type="number" id="termDays" placeholder="Введіть строк у днях">
+        </div>
+        <div class="form-group">
+            <label for="annualRate">Річна процентна ставка (%)</label>
+            <input type="number" id="annualRate" placeholder="Введіть річну процентну ставку">
+        </div>
+        <div class="form-group">
+            <label for="lenderCommission">Комісії за обслуговування кредитної заборгованості</label>
+            <input type="number" id="lenderCommission" placeholder="Введіть комісії">
+        </div>
+        <div class="form-group">
+            <label for="loanFee">Комісія за надання кредиту</label>
+            <input type="number" id="loanFee" placeholder="Введіть комісію за надання">
+        </div>
+        <div class="form-group">
+            <label for="brokerFee">Комісійний збір посередника (%)</label>
+            <input type="number" id="brokerFee" placeholder="Введіть комісійний збір у відсотках">
+        </div>
+        <div class="form-group">
+            <label for="thirdPartyPayments">Платежі третіх осіб (розрахунково-касове обслуговування)</label>
+            <input type="number" id="thirdPartyPayments" placeholder="Введіть платежі третіх осіб">
+        </div>
+        <div class="form-group">
+            <label for="notaryFee">Нотаріальні послуги</label>
+            <input type="number" id="notaryFee" placeholder="Введіть вартість нотаріальних послуг">
+        </div>
+        <div class="form-group">
+            <label for="appraisalFee">Послуги оцінювача</label>
+            <input type="number" id="appraisalFee" placeholder="Введіть вартість послуг оцінювача">
+        </div>
+        <div class="form-group">
+            <label for="insuranceFee">Страхові платежі</label>
+            <input type="number" id="insuranceFee" placeholder="Введіть суму страхових платежів">
+        </div>
+        <button onclick="calculateCredit()">Розрахувати</button>
+        <div class="result" id="result"></div>
+        <div class="schedule" id="schedule"></div>
+    </div>
+
+    <script>
+        function calculateCredit() {
+            // Отримання значень із форми
+            let loanAmount = parseFloat(document.getElementById('loanAmount').value);
+            let lenderCommission = parseFloat(document.getElementById('lenderCommission').value) || 0;
+            let loanFee = parseFloat(document.getElementById('loanFee').value) || 0;
+            let brokerFeePercentage = parseFloat(document.getElementById('brokerFee').value) || 0;
+            let brokerFee = (brokerFeePercentage / 100) * loanAmount;
+            let thirdPartyPayments = parseFloat(document.getElementById('thirdPartyPayments').value) || 0;
+            let notaryFee = parseFloat(document.getElementById('notaryFee').value) || 0;
+            let appraisalFee = parseFloat(document.getElementById('appraisalFee').value) || 0;
+            let insuranceFee = parseFloat(document.getElementById('insuranceFee').value) || 0;
+            let additionalCosts = lenderCommission + loanFee + brokerFee + thirdPartyPayments + notaryFee + appraisalFee + insuranceFee;
+            let annualRate = parseFloat(document.getElementById('annualRate').value);
+            let termDays = parseInt(document.getElementById('termDays').value);
+
+            // Загальна вартість кредиту (ЗВК)
+            let totalCreditCost = loanAmount + additionalCosts;
+
+            // Формування грошових потоків
+            let numMonths = Math.ceil(termDays / 30);
+            let monthlyRate = annualRate / 12 / 100;
+            let monthlyPayment = loanAmount * monthlyRate / (1 - Math.pow(1 + monthlyRate, -numMonths));
+            let cashFlows = [-loanAmount];
+            for (let i = 0; i < numMonths; i++) {
+                cashFlows.push(monthlyPayment);
+            }
+
+            // Дати платежів із рівними інтервалами в місяць
+            let paymentDates = [new Date()];
+            for (let i = 1; i <= numMonths; i++) {
+                let date = new Date(paymentDates[0]);
+                date.setMonth(date.getMonth() + i);
+                paymentDates.push(date);
+            }
+
+            // Функція для розрахунку NPV із заданою ставкою
+            function npv(rate) {
+                return cashFlows.reduce((sum, cf, idx) => sum + cf / Math.pow(1 + rate, (paymentDates[idx] - paymentDates[0]) / (365 * 24 * 3600 * 1000)), 0);
+            }
+
+            // Пошук реальної річної процентної ставки (РРПС)
+            function calculateRealAnnualRate() {
+                let low = 0, high = 1, tol = 1e-6, maxIter = 1000;
+                for (let iter = 0; iter < maxIter; iter++) {
+                    let guess = (low + high) / 2;
+                    let npvValue = npv(guess);
+                    if (Math.abs(npvValue) < tol) return guess * 100;
+                    if (npvValue > 0) low = guess;
+                    else high = guess;
+                }
+                return null; // Якщо не збіглося за maxIter ітерацій
+            }
+
+            let realAnnualRate = calculateRealAnnualRate();
+
+            // Розрахунок денної процентної ставки (ДПС)
+            let dailyRate = (additionalCosts / loanAmount) / termDays * 100;
+
+            // Виведення результату
+            document.getElementById('result').innerHTML = `
+                <p><strong>Сума кредиту (ЗРК):</strong> ${loanAmount.toFixed(2)} грн</p>
+                <p><strong>Загальні витрати (ЗВСК):</strong> ${additionalCosts.toFixed(2)} грн</p>
+                <p><strong>Загальна вартість кредиту (ЗВК):</strong> ${totalCreditCost.toFixed(2)} грн</p>
+                <p><strong>Річна процентна ставка:</strong> ${annualRate.toFixed(2)} %</p>
+                <p><strong>Реальна річна процентна ставка (РРПС):</strong> ${realAnnualRate.toFixed(2)} %</p>
+                <p><strong>Денна процентна ставка (ДПС):</strong> ${dailyRate.toFixed(5)} %</p>
+            `;
+
+            // Формування графіка погашення кредиту
+            let balance = loanAmount;
+            let scheduleHTML = `
+                <h3>Графік погашення кредиту</h3>
+                <table>
+                    <tr>
+                        <th>Місяць</th>
+                        <th>Дата платежу</th>
+                        <th>Платіж</th>
+                        <th>Основна сума</th>
+                        <th>Відсотки</th>
+                        <th>Залишок боргу</th>
+                    </tr>
+            `;
+
+            for (let i = 0; i < numMonths; i++) {
+                let interest = balance * monthlyRate;
+                let principal = monthlyPayment - interest;
+                balance -= principal;
+
+                scheduleHTML += `
+                    <tr>
+                        <td>${i + 1}</td>
+                        <td>${paymentDates[i + 1].toLocaleDateString()}</td>
+                        <td>${monthlyPayment.toFixed(2)}</td>
+                        <td>${principal.toFixed(2)}</td>
+                        <td>${interest.toFixed(2)}</td>
+                        <td>${balance.toFixed(2)}</td>
+                    </tr>
+                `;
+            }
+
+            scheduleHTML += `</table>`;
+            document.getElementById('schedule').innerHTML = scheduleHTML;
+        }
+    </script>
+</body>
+</html>
